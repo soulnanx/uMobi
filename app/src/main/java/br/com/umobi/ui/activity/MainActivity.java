@@ -13,7 +13,7 @@ import br.com.umobi.R;
 import br.com.umobi.ui.fragment.MapsFragment;
 import br.com.umobi.ui.fragment.ProfileFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseAppCompatActivity {
 
     private TextView mTextMessage;
 
@@ -41,16 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public void changeFragment(Fragment frag, String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
-        //transaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
         transaction.replace(R.id.content, frag, tag);
-
-//        if (frag.getTag().equals(this.tag)) {
-//            transaction.disallowAddToBackStack();
-//        } else {
-//            transaction.addToBackStack(null);
-//        }
-
-
         transaction.commit();
     }
 

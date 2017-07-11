@@ -5,9 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import br.com.umobi.R;
 import br.com.umobi.ui.fragment.MapsFragment;
@@ -15,28 +13,16 @@ import br.com.umobi.ui.fragment.ProfileFragment;
 
 public class MainActivity extends BaseAppCompatActivity {
 
-    private TextView mTextMessage;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener());
+        changeFragment(new MapsFragment(), MapsFragment.TAG);
+    }
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_map:
-                    changeFragment(new MapsFragment(), MapsFragment.TAG);
-                    return true;
-                case R.id.navigation_dashboard:
-                    changeFragment(new MapsFragment(), MapsFragment.TAG);
-                    return true;
-                case R.id.navigation_profile:
-                    changeFragment(new ProfileFragment(), ProfileFragment.TAG);
-                    return true;
-            }
-            return false;
-        }
-
-    };
 
     public void changeFragment(Fragment frag, String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -45,14 +31,26 @@ public class MainActivity extends BaseAppCompatActivity {
         transaction.commit();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener() {
+        return new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_map:
+                        changeFragment(new MapsFragment(), MapsFragment.TAG);
+                        return true;
+                    case R.id.navigation_dashboard:
+                        changeFragment(new MapsFragment(), MapsFragment.TAG);
+                        return true;
+                    case R.id.navigation_profile:
+                        changeFragment(new ProfileFragment(), ProfileFragment.TAG);
+                        return true;
+                }
+                return false;
+            }
+        };
     }
+
 
 }

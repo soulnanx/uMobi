@@ -1,9 +1,13 @@
 package br.com.umobi.entity;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.FindCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 /**
  * Created by renan on 10/07/17.
@@ -16,6 +20,7 @@ public class Place extends ParseObject{
     public static final String ADDRESS = "address";
     public static final String POSTAL_CODE = "postalCode";
     public static final String DESCRIPTION = "description";
+    public static final String ENABLED = "enabled";
 
     public void setTitle(String title) {
         put(TITLE, title);
@@ -66,6 +71,24 @@ public class Place extends ParseObject{
 
     public String getDescription() {
         return getString(DESCRIPTION);
+    }
+
+    public boolean isEnabled() {
+        return getBoolean(ENABLED);
+    }
+
+    public void setEnabled(boolean isEnabled) {
+        put(ENABLED, isEnabled);
+    }
+
+
+
+    public static void getPlacesNearMe(int meters, LatLng latlong, FindCallback<Place> callback){
+        ParseGeoPoint geoPoint = new ParseGeoPoint(latlong.latitude, latlong.longitude);
+        ParseQuery.getQuery(Place.class)
+                .whereWithinKilometers(Place.LAT_LONG, geoPoint, meters)
+                .whereEqualTo(Place.ENABLED, true)
+                .findInBackground(callback);
     }
 
 

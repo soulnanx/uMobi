@@ -1,4 +1,4 @@
-package br.com.umobi.ui.app;
+package br.com.umobi.app;
 
 
 import android.app.Application;
@@ -8,6 +8,9 @@ import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 
 import br.com.umobi.R;
+import br.com.umobi.entity.Place;
+import br.com.umobi.entity.Rating;
+import br.com.umobi.entity.User;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -25,10 +28,12 @@ public class App extends Application {
     }
 
     private void initParse() {
-        //ParseObject.registerSubclass(Comment.class);
+        ParseObject.registerSubclass(Place.class);
+        ParseObject.registerSubclass(Rating.class);
+        ParseObject.registerSubclass(User.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId("br.com.metasix.skedly")
+                .applicationId(getString(R.string.parse_id))
                 .clientKey(getString(R.string.client_key))
                 .server(getString(R.string.parse_url))
                 .build());

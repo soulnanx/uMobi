@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="client_key" templateMergeStrategy="preserve" translatable="false">Wpmx75EjJe15wN6PP2Ymy7rtujfQgE5qCCNfhcQm</string>
-    <string name="parse_url">https://parseapi.back4app.com/</string>
+    <string name="parse_url" templateMergeStrategy="preserve" translatable="false">https://parseapi.back4app.com/</string>
+    <string name="parse_id" templateMergeStrategy="preserve" translatable="false">4fCfwq3D86WlRT2vJZUQ3r5utdq4YEL4JFvrPGwi</string>
 
 </resources>

@@ -2,37 +2,60 @@ package br.com.umobi.ui.fragment;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import br.com.umobi.R;
 import br.com.umobi.entity.Place;
 import br.com.umobi.ui.activity.MainActivity;
+import br.com.umobi.utils.LatLongUtils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback{
 
     public static final String TAG = "MapFragment";
+    public static final int ONE_KILOMETER = 1000;
+    public static final int FIFTY_KILOMETER = 50000;
 
     private GoogleMap mMap;
     private View view;
+    private LatLng cameraPositionLastSearch;
+
+    @BindView(R.id.fragment_maps_content_pin)
+    View contentPin;
+
+    @BindView(R.id.fragment_maps_content_pin_title)
+    TextView title;
+
+    @BindView(R.id.fragment_maps_content_pin_description)
+    TextView description;
+
+    @BindView(R.id.fragment_maps_content_pin_address)
+    TextView address;
 
 
     @Override
@@ -44,6 +67,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
     }
 
     private void init() {
+        ButterKnife.bind(this, view);
         loadMap();
     }
 
@@ -57,9 +81,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         mMap = googleMap;
         setupMap();
 
-        if (((MainActivity)this.getActivity()).getLastLocation() != null){
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(((MainActivity)this.getActivity()).getLastLocation()));
-        }
+        moveCameraToUserPosition();
     }
 
     private FindCallback<Place> onGetPlacesNearMe() {
@@ -67,6 +89,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
             @Override
             public void done(List<Place> places, ParseException e) {
                 if (e == null) {
+                    mMap.clear();
                     addPinsToMap(places);
                 } else {
                     Toast.makeText(MapsFragment.this.getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
@@ -78,7 +101,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
     private void addPinsToMap(List<Place> places) {
         for (Place place : places) {
             if (place.getLatLong() != null){
-                mMap.addMarker(new MarkerOptions().position(place.getLatLong()));
+                mMap.addMarker(new MarkerOptions().position(place.getLatLong())).setTag(place);
             }
         }
     }
@@ -86,6 +109,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
     private void setupMap() {
         mMap.setOnMapLongClickListener(onLongClickListener());
         mMap.setOnCameraIdleListener(onCameraIdle());
+        mMap.setOnMarkerClickListener(onMarkerClick());
+        mMap.setOnMapClickListener(onMapClick());
         mMap.setMaxZoomPreference(20);
         mMap.setMinZoomPreference(18);
 
@@ -103,14 +128,80 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
 
     }
 
+    private GoogleMap.OnMapClickListener onMapClick() {
+        return new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                hideContentPin();
+            }
+        };
+    }
+
+    private GoogleMap.OnMarkerClickListener onMarkerClick() {
+        return new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                showContentPin(marker);
+                return false;
+            }
+        };
+    }
+
+    private void hideContentPin() {
+        contentPin.setVisibility(View.GONE);
+    }
+
+    private void showContentPin(Marker marker) {
+        contentPin.setVisibility(View.VISIBLE);
+        fillContentPin(marker);
+    }
+
+    private void fillContentPin(Marker marker) {
+        Place place = (Place) marker.getTag();
+        title.setText(place.getTitle());
+        description.setText(place.getDescription());
+        address.setText(place.getAddress());
+
+    }
+
     private GoogleMap.OnCameraIdleListener onCameraIdle() {
         return new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                mMap.clear();
-                Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
+                if (cameraPositionLastSearch != null){
+                    double dist = LatLongUtils.calcDistance(cameraPositionLastSearch, mMap.getCameraPosition().target);
+                    if (dist > ONE_KILOMETER && dist < FIFTY_KILOMETER){
+                        Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
+                        cameraPositionLastSearch = mMap.getCameraPosition().target;
+                    }
+                }
             }
         };
+    }
+
+    private void moveCameraToUserPosition(){
+
+        if (mMap != null && ((MainActivity)this.getActivity()).getLastLocation() != null){
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(((MainActivity)this.getActivity()).getLastLocation()));
+            Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
+        } else {
+            ((MainActivity)this.getActivity()).findLastLocation(new MainActivity.OnLocationFound() {
+                @Override
+                public void received(Location lastLocation) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(
+                            new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())
+
+                    ));
+                    Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
+                    cameraPositionLastSearch = mMap.getCameraPosition().target;
+                }
+
+                @Override
+                public void failed() {
+                    // TODO get last location saved
+                }
+            });
+        }
     }
 
     private GoogleMap.OnMapLongClickListener onLongClickListener() {

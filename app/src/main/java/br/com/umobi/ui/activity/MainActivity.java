@@ -76,7 +76,7 @@ public class MainActivity extends BaseAppCompatActivity implements GoogleApiClie
         transaction.commit();
     }
 
-    public void findLastLocation() {
+    public void findLastLocation(final OnLocationFound locationFound) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -91,16 +91,20 @@ public class MainActivity extends BaseAppCompatActivity implements GoogleApiClie
 
         if (location != null) {
             attempts = 0;
-            lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
+            locationFound.received(location);
+
         } else if (attempts < 10) {
             attempts++;
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    findLastLocation();
+                    findLastLocation(locationFound);
                 }
             }, 2000);
+        } else {
+            locationFound.failed();
         }
+
     }
 
     private void verifyStatusGps() {
@@ -118,7 +122,7 @@ public class MainActivity extends BaseAppCompatActivity implements GoogleApiClie
 
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
-                        findLastLocation();
+                        //findLastLocation(onMyLocationReceived());
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         if (needsToShowDialog) {
@@ -135,7 +139,22 @@ public class MainActivity extends BaseAppCompatActivity implements GoogleApiClie
                         break;
                 }
             }
+
         });
+    }
+
+    private OnLocationFound onMyLocationReceived() {
+        return new OnLocationFound() {
+            @Override
+            public void received(Location lastLocationFound) {
+                lastLocation = new LatLng(lastLocationFound.getLatitude(), lastLocationFound.getLongitude());
+            }
+
+            @Override
+            public void failed() {
+
+            }
+        };
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener() {
@@ -161,7 +180,7 @@ public class MainActivity extends BaseAppCompatActivity implements GoogleApiClie
 
     @Override
     public void onConnected(Bundle bundle) {
-        findLastLocation();
+       // findLastLocation(onMyLocationReceived());
     }
 
     @Override
@@ -212,6 +231,12 @@ public class MainActivity extends BaseAppCompatActivity implements GoogleApiClie
 
         handler.removeCallbacksAndMessages(null);
         super.onStop();
+    }
+
+    public interface OnLocationFound{
+        void received(Location lastLocation);
+
+        void failed();
     }
 
 

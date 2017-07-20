@@ -1,7 +1,9 @@
 package br.com.umobi.entity;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseClassName;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -10,6 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.Normalizer;
+
+import br.com.umobi.contants.ConstantsTinyDB;
+import br.com.umobi.db.TinyDB;
 
 /**
  * Created by renan on 10/07/17.
@@ -24,7 +29,6 @@ public class User extends ParseUser {
     public static final String AVATAR = "avatar";
     public static final String BIRTHDAY = "birthday";
     public static final String GENDER = "gender";
-
 
     public void setNickName(String nickname) {
         put(NICK_NAME, nickname);
@@ -164,5 +168,20 @@ public class User extends ParseUser {
 
     public String getFullPhone() {
         return "(" + getDDD() + ") " + getPhone();
+    }
+
+    public static boolean hasLastLocation(Context context) {
+        return new TinyDB(context).getDouble(ConstantsTinyDB.LAST_LATITUDE_USER, 0.0) != 0.0;
+    }
+
+    public static LatLng getLastLocation(Context context) {
+        return new LatLng(
+                new TinyDB(context).getDouble(ConstantsTinyDB.LAST_LATITUDE_USER, 0.0),
+                new TinyDB(context).getDouble(ConstantsTinyDB.LAST_LONGITUDE_USER, 0.0));
+    }
+
+    public static void saveLastLocation(Context context, LatLng latLng) {
+        new TinyDB(context).putDouble(ConstantsTinyDB.LAST_LATITUDE_USER, latLng.latitude);
+        new TinyDB(context).putDouble(ConstantsTinyDB.LAST_LONGITUDE_USER, latLng.longitude);
     }
 }

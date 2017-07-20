@@ -1,8 +1,9 @@
 package br.com.umobi.ui.fragment;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -25,13 +26,13 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Locale;
 
 import br.com.umobi.R;
 import br.com.umobi.entity.Place;
+import br.com.umobi.entity.User;
 import br.com.umobi.ui.activity.MainActivity;
 import br.com.umobi.ui.activity.PlaceDetailActivity;
 import br.com.umobi.utils.LatLongUtils;
@@ -39,7 +40,7 @@ import br.com.umobi.utils.NavigationUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback{
+public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     public static final String TAG = "MapFragment";
     public static final int ONE_KILOMETER = 1000;
@@ -69,6 +70,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
 
     @BindView(R.id.fragment_maps_content_add_problem)
     Button addProblem;
+
+    @BindView(R.id.fragment_maps_content_add_address)
+    TextView addAddress;
 
     @BindView(R.id.fragment_maps_content_pin_more)
     Button placeMore;
@@ -147,7 +151,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
 
     private void addPinsToMap(List<Place> places) {
         for (Place place : places) {
-            if (place.getLatLong() != null){
+            if (place.getLatLong() != null) {
                 mMap.addMarker(new MarkerOptions().position(place.getLatLong())).setTag(place);
             }
         }
@@ -202,8 +206,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         contentAdd.setVisibility(View.GONE);
     }
 
-    private void clearNewMarker(){
-        if (newMarker != null){
+    private void clearNewMarker() {
+        if (newMarker != null) {
             newMarker.remove();
             newMarker = null;
         }
@@ -226,9 +230,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         return new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                if (cameraPositionLastSearch != null){
+                if (cameraPositionLastSearch != null) {
                     double dist = LatLongUtils.calcDistance(cameraPositionLastSearch, mMap.getCameraPosition().target);
-                    if (dist > ONE_KILOMETER && dist < FIFTY_KILOMETER){
+                    if (dist > ONE_KILOMETER && dist < FIFTY_KILOMETER) {
                         Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
                         cameraPositionLastSearch = mMap.getCameraPosition().target;
                     }
@@ -237,21 +241,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         };
     }
 
-    private void moveCameraToUserPosition(){
+    private void moveCameraToUserPosition() {
 
-        if (mMap != null && ((MainActivity)this.getActivity()).getLastLocation() != null){
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(((MainActivity)this.getActivity()).getLastLocation()));
+        if (mMap != null && ((MainActivity) this.getActivity()).getLastLocation() != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(((MainActivity) this.getActivity()).getLastLocation()));
             Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
         } else {
-            ((MainActivity)this.getActivity()).findLastLocation(new MainActivity.OnLocationFound() {
+            moveCameraToUserLastLocation();
+            ((MainActivity) this.getActivity()).findLastLocation(new MainActivity.OnLocationFound() {
                 @Override
                 public void received(Location lastLocation) {
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(
                             new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())
 
                     ));
+
                     Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
                     cameraPositionLastSearch = mMap.getCameraPosition().target;
+                    User.saveLastLocation(
+                            MapsFragment.this.getActivity(),
+                            new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
                 }
 
                 @Override
@@ -259,6 +268,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
                     // TODO get last location saved
                 }
             });
+        }
+    }
+
+    private void moveCameraToUserLastLocation() {
+        if (User.hasLastLocation(MapsFragment.this.getActivity())) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(User.getLastLocation(MapsFragment.this.getActivity())));
         }
     }
 
@@ -279,6 +294,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
 
     private void showContentAdd(LatLng latLng) {
         contentAdd.setVisibility(View.VISIBLE);
+        Geocoder geocoder = new Geocoder(this.getContext(), Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String address = addresses.get(0).getAddressLine(0);
+        addAddress.setText(address);
+
     }
 
     private void saveNewPlace(LatLng latLng) {
@@ -296,7 +322,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         place.saveEventually(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if (e == null){
+                if (e == null) {
                     Toast.makeText(MapsFragment.this.getActivity(), "saved", Toast.LENGTH_SHORT).show();
                 } else {
                     clearNewMarker();

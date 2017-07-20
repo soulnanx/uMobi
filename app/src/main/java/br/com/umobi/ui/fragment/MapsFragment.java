@@ -1,6 +1,7 @@
 package br.com.umobi.ui.fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +33,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import br.com.umobi.R;
 import br.com.umobi.entity.Place;
 import br.com.umobi.ui.activity.MainActivity;
+import br.com.umobi.ui.activity.PlaceDetailActivity;
 import br.com.umobi.utils.LatLongUtils;
+import br.com.umobi.utils.NavigationUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -57,6 +61,20 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
     @BindView(R.id.fragment_maps_content_pin_address)
     TextView address;
 
+    @BindView(R.id.fragment_maps_content_add)
+    View contentAdd;
+
+    @BindView(R.id.fragment_maps_content_add_place)
+    Button addPlace;
+
+    @BindView(R.id.fragment_maps_content_add_problem)
+    Button addProblem;
+
+    @BindView(R.id.fragment_maps_content_pin_more)
+    Button placeMore;
+
+    private Marker newMarker;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +87,35 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
     private void init() {
         ButterKnife.bind(this, view);
         loadMap();
+        setEvents();
+    }
+
+    private void setEvents() {
+        placeMore.setOnClickListener(onClickPlaceMore());
+        addPlace.setOnClickListener(onClickAddPlace());
+        addProblem.setOnClickListener(onClickAddProblem());
+    }
+
+    private View.OnClickListener onClickPlaceMore() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavigationUtils.navigate(MapsFragment.this.getActivity(), PlaceDetailActivity.class, false);
+            }
+        };
+    }
+
+    private View.OnClickListener onClickAddPlace() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveNewPlace(newMarker.getPosition());
+            }
+        };
+    }
+
+    private View.OnClickListener onClickAddProblem() {
+        return null;
     }
 
     private void loadMap() {
@@ -132,7 +179,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         return new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                hideContentPin();
+                clearNewMarker();
+                hideContents();
             }
         };
     }
@@ -141,14 +189,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         return new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                clearNewMarker();
+                hideContents();
                 showContentPin(marker);
                 return false;
             }
         };
     }
 
-    private void hideContentPin() {
+    private void hideContents() {
         contentPin.setVisibility(View.GONE);
+        contentAdd.setVisibility(View.GONE);
+    }
+
+    private void clearNewMarker(){
+        if (newMarker != null){
+            newMarker.remove();
+            newMarker = null;
+        }
     }
 
     private void showContentPin(Marker marker) {
@@ -208,15 +266,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         return new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in" + latLng.latitude));
+                clearNewMarker();
+                newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in" + latLng.latitude));
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                hideContents();
+                showContentAdd(latLng);
 
-                saveNewPlace(latLng);
+                //saveNewPlace(latLng);
             }
         };
     }
 
+    private void showContentAdd(LatLng latLng) {
+        contentAdd.setVisibility(View.VISIBLE);
+    }
+
     private void saveNewPlace(LatLng latLng) {
+        hideContents();
+
         Place place = new Place();
         place.setLatLong(latLng);
         place.setAddress("address" + latLng.latitude);
@@ -231,6 +298,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
             public void done(ParseException e) {
                 if (e == null){
                     Toast.makeText(MapsFragment.this.getActivity(), "saved", Toast.LENGTH_SHORT).show();
+                } else {
+                    clearNewMarker();
                 }
             }
         });

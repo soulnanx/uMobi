@@ -21,35 +21,11 @@
         android:background="@android:color/white"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/fragment_maps_content_pin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_margin="16dp">
+        <include layout="@layout/include_fragment_map_content_pin"/>
 
-            <TextView
-                android:id="@+id/fragment_maps_content_pin_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:layout_marginBottom="6dp"/>
+        <include layout="@layout/include_fragment_map_content_add"/>
 
-            <TextView
-                android:id="@+id/fragment_maps_content_pin_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_marginBottom="6dp"/>
 
-            <TextView
-                android:id="@+id/fragment_maps_content_pin_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"/>
-
-        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>

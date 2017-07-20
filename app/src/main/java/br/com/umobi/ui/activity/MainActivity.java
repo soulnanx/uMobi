@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -47,6 +48,7 @@ public class MainActivity extends BaseAppCompatActivity implements GoogleApiClie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);

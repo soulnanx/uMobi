@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 
 import br.com.umobi.R;
 import br.com.umobi.contants.ConstantsPermissions;
@@ -23,6 +24,7 @@ public class SplashScreenActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_splashscreen);
         if (PermissionsUtils.hasGPSPermission(this)) {

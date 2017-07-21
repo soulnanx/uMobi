@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="26dp"
+    tools:context="br.com.umobi.ui.fragment.NewPlaceReviewFragment">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="Como você avalia a acessibildade desse local?"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginBottom="20dp"
+        android:textSize="30sp" />
+
+
+    <Button
+        android:id="@+id/fragment_new_place_review_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Avaliar!"
+        android:layout_alignParentRight="true"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimaryDark"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

@@ -34,6 +34,7 @@ import br.com.umobi.R;
 import br.com.umobi.entity.Place;
 import br.com.umobi.entity.User;
 import br.com.umobi.ui.activity.MainActivity;
+import br.com.umobi.ui.activity.NewPlaceActivity;
 import br.com.umobi.ui.activity.PlaceDetailActivity;
 import br.com.umobi.utils.LatLongUtils;
 import br.com.umobi.utils.NavigationUtils;
@@ -113,7 +114,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveNewPlace(newMarker.getPosition());
+                NavigationUtils.navigate(MapsFragment.this.getActivity(), NewPlaceActivity.class, false);
             }
         };
     }

@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.LatLng;
 import br.com.umobi.R;
 import br.com.umobi.ui.fragment.MapsFragment;
 import br.com.umobi.ui.fragment.ProfileFragment;
+import br.com.umobi.utils.NavigationUtils;
 
 public class MainActivity extends BaseAppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{

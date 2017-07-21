@@ -60,7 +60,7 @@ public class SplashScreenActivity extends BaseAppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                NavigationUtils.navigate(SplashScreenActivity.this, MainActivity.class, true);
+                NavigationUtils.navigate(SplashScreenActivity.this, LoginActivity.class, true);
             }
         }, 2000);
     }

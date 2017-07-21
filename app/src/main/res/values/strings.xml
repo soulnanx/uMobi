@@ -102,4 +102,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="login_title">Seja bem vindo a comunidade umobi.</string>
+    <string name="login_user_condition">Temos de uso</string>
+    <string name="login_user_condition_body">Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor</string>
 </resources>

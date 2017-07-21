@@ -181,7 +181,6 @@ public class User extends ParseUser {
     }
 
     public static void saveLastLocation(Context context, LatLng latLng) {
-        new TinyDB(context).putDouble(ConstantsTinyDB.LAST_LATITUDE_USER, latLng.latitude);
         new TinyDB(context).putDouble(ConstantsTinyDB.LAST_LONGITUDE_USER, latLng.longitude);
     }
 }

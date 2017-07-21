@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="26dp"
+    tools:context="br.com.umobi.ui.fragment.NewPlaceFinishFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="Pronto!"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Muito obrigado por ajudar a expandir nossa comunidade"
+        android:textSize="24sp" />
+
+
+    <Button
+        android:id="@+id/fragment_new_place_review_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fechar"
+        android:layout_alignParentRight="true"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimaryDark"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

@@ -10,7 +10,8 @@
     <TextView
         android:id="@+id/fragment_maps_content_add_address"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
 
     <TextView
         android:layout_width="match_parent"

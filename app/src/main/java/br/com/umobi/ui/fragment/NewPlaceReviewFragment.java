@@ -32,7 +32,6 @@ public class NewPlaceReviewFragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-
         setEvents();
     }
 
@@ -44,10 +43,17 @@ public class NewPlaceReviewFragment extends Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((NewPlaceActivity)NewPlaceReviewFragment.this.getActivity())
-                        .changeFragment(new NewPlaceFinishFragment(), NewPlaceFinishFragment.TAG);
+                next();
             }
         };
+    }
+
+    private void next() {
+        ((NewPlaceActivity)NewPlaceReviewFragment.this.getActivity())
+                .changeFragment(new NewPlaceFinishFragment(), NewPlaceFinishFragment.TAG);
+
+        ((NewPlaceActivity)NewPlaceReviewFragment.this.getActivity())
+                .getNewPlace().saveEventually();
     }
 
 

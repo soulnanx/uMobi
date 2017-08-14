@@ -7,8 +7,6 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.util.List;
-
 /**
  * Created by renan on 10/07/17.
  */
@@ -21,6 +19,7 @@ public class Place extends ParseObject{
     public static final String POSTAL_CODE = "postalCode";
     public static final String DESCRIPTION = "description";
     public static final String ENABLED = "enabled";
+    public static final String PLACE_CATEGORY = "placeCategory";
 
     public void setTitle(String title) {
         put(TITLE, title);
@@ -81,6 +80,13 @@ public class Place extends ParseObject{
         put(ENABLED, isEnabled);
     }
 
+    public void setPlaceCategory(PlaceCategory placeCategory) {
+        put(PLACE_CATEGORY, placeCategory);
+    }
+
+    public PlaceCategory getPlaceCategory() {
+        return (PlaceCategory) get(PLACE_CATEGORY);
+    }
 
 
     public static void getPlacesNearMe(int meters, LatLng latlong, FindCallback<Place> callback){

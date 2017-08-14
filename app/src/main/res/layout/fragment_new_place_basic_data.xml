@@ -46,7 +46,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/fragment_new_place_basic_data_address"
+                android:id="@+id/fragment_new_place_basic_data_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/fragment_new_place_basic_data_description"
+                android:id="@+id/fragment_new_place_basic_data_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"

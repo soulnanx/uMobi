@@ -9,6 +9,8 @@ import com.parse.ParseObject;
 
 import br.com.umobi.R;
 import br.com.umobi.entity.Place;
+import br.com.umobi.entity.PlaceCategory;
+import br.com.umobi.entity.Question;
 import br.com.umobi.entity.Rating;
 import br.com.umobi.entity.User;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -25,10 +27,13 @@ public class App extends Application {
         initParse();
         initFacebook();
         initFonts();
+
     }
 
     private void initParse() {
         ParseObject.registerSubclass(Place.class);
+        ParseObject.registerSubclass(PlaceCategory.class);
+        ParseObject.registerSubclass(Question.class);
         ParseObject.registerSubclass(Rating.class);
         ParseObject.registerSubclass(User.class);
 

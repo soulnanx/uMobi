@@ -19,6 +19,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -27,8 +29,11 @@ import com.parse.ParseException;
 import com.parse.SaveCallback;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 import br.com.umobi.R;
 import br.com.umobi.entity.Place;
@@ -79,6 +84,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     Button placeMore;
 
     private Marker newMarker;
+    private Address selectedAddress;
 
 
     @Override
@@ -114,7 +120,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavigationUtils.navigate(MapsFragment.this.getActivity(), NewPlaceActivity.class, false);
+                NavigationUtils.navigate(
+                        MapsFragment.this.getActivity(),
+                        NewPlaceActivity.class,
+                        NavigationUtils.createBundle("selectedAddress", selectedAddress),
+                        false);
             }
         };
     }
@@ -142,7 +152,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             public void done(List<Place> places, ParseException e) {
                 if (e == null) {
                     mMap.clear();
-                    addPinsToMap(places);
+                    addPinsToMap(places, false);
                 } else {
                     Toast.makeText(MapsFragment.this.getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -150,12 +160,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         };
     }
 
-    private void addPinsToMap(List<Place> places) {
+    private void addPinsToMap(List<Place> places, boolean isNew) {
         for (Place place : places) {
             if (place.getLatLong() != null) {
-                mMap.addMarker(new MarkerOptions().position(place.getLatLong())).setTag(place);
+                createPin(place);
             }
         }
+    }
+
+    private void createPin(Place place){
+        mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_ok_50))
+                .position(place.getLatLong())).setTag(place);
     }
 
     private void setupMap() {
@@ -283,12 +299,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 clearNewMarker();
-                newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in" + latLng.latitude));
+                newMarker = mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_new_50))
+                        .position(latLng).title("Marker in" + latLng.latitude));
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 hideContents();
                 showContentAdd(latLng);
-
-                //saveNewPlace(latLng);
             }
         };
     }
@@ -304,32 +320,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
 
         String address = addresses.get(0).getAddressLine(0);
+        selectedAddress = addresses.get(0);
         addAddress.setText(address);
 
-    }
-
-    private void saveNewPlace(LatLng latLng) {
-        hideContents();
-
-        Place place = new Place();
-        place.setLatLong(latLng);
-        place.setAddress("address" + latLng.latitude);
-        place.setTitle("title" + latLng.latitude);
-        place.setDescription("description" + latLng.latitude);
-        place.setPostalCode(String.valueOf(latLng.latitude));
-        place.setEnabled(true);
-
-
-        place.saveEventually(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Toast.makeText(MapsFragment.this.getActivity(), "saved", Toast.LENGTH_SHORT).show();
-                } else {
-                    clearNewMarker();
-                }
-            }
-        });
     }
 
 }

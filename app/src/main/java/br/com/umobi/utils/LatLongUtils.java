@@ -1,5 +1,7 @@
 package br.com.umobi.utils;
 
+import android.location.Address;
+
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -22,6 +24,10 @@ public class LatLongUtils {
 
     private static double rad(double lat) {
         return lat * Math.PI / 180;
+    }
+
+    public static LatLng parseAddress(Address address){
+        return new LatLng(address.getLatitude(), address.getLongitude());
     }
 
 }

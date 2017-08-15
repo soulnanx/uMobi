@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -64,6 +65,12 @@ public class NavigationUtils {
 	public static Bundle createBundle(String key, Serializable value){
 		Bundle bundle = new Bundle();
 		bundle.putSerializable(key, value);
+		return bundle;
+	}
+
+	public static Bundle createBundle(String key, Parcelable value){
+		Bundle bundle = new Bundle();
+		bundle.putParcelable(key, value);
 		return bundle;
 	}
 

@@ -108,4 +108,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="answer_yes">Sim</string>
+    <string name="answer_no">Não</string>
+    <string name="answer_do_not_know">Não sei...</string>
+    <string name="answer_radio_i_do_not_know">Não sei...</string>
 </resources>

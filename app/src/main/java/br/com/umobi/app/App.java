@@ -8,6 +8,7 @@ import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 
 import br.com.umobi.R;
+import br.com.umobi.entity.Answer;
 import br.com.umobi.entity.Place;
 import br.com.umobi.entity.PlaceCategory;
 import br.com.umobi.entity.Question;
@@ -31,6 +32,7 @@ public class App extends Application {
     }
 
     private void initParse() {
+        ParseObject.registerSubclass(Answer.class);
         ParseObject.registerSubclass(Place.class);
         ParseObject.registerSubclass(PlaceCategory.class);
         ParseObject.registerSubclass(Question.class);

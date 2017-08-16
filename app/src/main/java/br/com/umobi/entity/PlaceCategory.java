@@ -4,6 +4,7 @@ package br.com.umobi.entity;
 import com.parse.FindCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -12,7 +13,7 @@ import com.parse.ParseUser;
  */
 
 @ParseClassName("PlaceCategory")
-public class PlaceCategory extends ParseUser {
+public class PlaceCategory extends ParseObject {
     public static final String TITLE = "title";
     public static final String ICON = "icon";
     public static final String AVAILABLE = "available";

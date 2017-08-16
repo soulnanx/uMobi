@@ -1,6 +1,7 @@
 package br.com.umobi.ui.fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -19,23 +20,20 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
 
 import br.com.umobi.R;
+import br.com.umobi.contants.ConstantsRequestCode;
+import br.com.umobi.contants.ConstantsResultCode;
 import br.com.umobi.entity.Place;
 import br.com.umobi.entity.User;
 import br.com.umobi.ui.activity.MainActivity;
@@ -120,11 +118,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavigationUtils.navigate(
-                        MapsFragment.this.getActivity(),
-                        NewPlaceActivity.class,
-                        NavigationUtils.createBundle("selectedAddress", selectedAddress),
-                        false);
+                Intent intent = new Intent(MapsFragment.this.getActivity(), NewPlaceActivity.class);
+                intent.putExtra("selectedAddress", selectedAddress);
+                startActivityForResult(intent, ConstantsRequestCode.NEW_PLACE);
             }
         };
     }
@@ -325,4 +321,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ConstantsRequestCode.NEW_PLACE){
+
+            switch (resultCode){
+                case ConstantsResultCode.NEW_PLACE_FINISHED:
+                    hideContents();
+                    Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
+                    break;
+                case ConstantsResultCode.NEW_PLACE_CANCELLED:
+
+                    break;
+            }
+
+        }
+    }
 }

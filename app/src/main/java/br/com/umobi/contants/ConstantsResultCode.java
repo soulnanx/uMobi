@@ -1,0 +1,10 @@
+package br.com.umobi.contants;
+
+/**
+ * Created by renan on 16/08/17.
+ */
+
+public class ConstantsResultCode {
+    public static final int NEW_PLACE_FINISHED = 1001;
+    public static final int NEW_PLACE_CANCELLED = 1002;
+}

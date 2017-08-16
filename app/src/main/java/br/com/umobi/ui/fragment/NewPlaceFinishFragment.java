@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import br.com.umobi.R;
+import br.com.umobi.contants.ConstantsResultCode;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -32,7 +33,6 @@ public class NewPlaceFinishFragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-
         setEvents();
     }
 
@@ -44,6 +44,7 @@ public class NewPlaceFinishFragment extends Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                NewPlaceFinishFragment.this.getActivity().setResult(ConstantsResultCode.NEW_PLACE_FINISHED);
                 NewPlaceFinishFragment.this.getActivity().finish();
             }
         };

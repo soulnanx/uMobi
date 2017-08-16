@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import br.com.umobi.R;
+import br.com.umobi.contants.ConstantsResultCode;
 import br.com.umobi.entity.Place;
 import br.com.umobi.entity.Question;
 import br.com.umobi.ui.fragment.NewPlaceBasicDataFragment;
@@ -49,5 +50,11 @@ public class NewPlaceActivity extends BaseAppCompatActivity {
 
     public Address getSelectedAddress() {
         return selectedAddress;
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(ConstantsResultCode.NEW_PLACE_CANCELLED);
+        super.onBackPressed();
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +12,14 @@ import android.widget.Button;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.SaveCallback;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.umobi.R;
 import br.com.umobi.adapter.QuestionAdapter;
-import br.com.umobi.contants.ConstantsAnswer;
 import br.com.umobi.entity.Answer;
 import br.com.umobi.entity.PlaceCategory;
 import br.com.umobi.entity.Question;
@@ -38,8 +40,8 @@ public class NewPlaceReviewFragment extends Fragment {
 
     private View view;
     private PlaceCategory selectedPlaceCategory;
-    private List<Question> questionList;
     private List<Answer> answersToSave;
+    private NewPlaceActivity newPlaceActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,8 +54,8 @@ public class NewPlaceReviewFragment extends Fragment {
     private void init() {
         ButterKnife.bind(this, view);
 
-        questionList = new ArrayList<>();
         answersToSave = new ArrayList<>();
+        newPlaceActivity = ((NewPlaceActivity)NewPlaceReviewFragment.this.getActivity());
         setEvents();
         loadValues();
     }
@@ -107,10 +109,63 @@ public class NewPlaceReviewFragment extends Fragment {
         return new QuestionAdapter.CallbackClick() {
             @Override
             public void onClick(Question question, int answer) {
-                question.toString();
-
+                createAnswerListToSave(question, answer);
             }
         };
+    }
+
+    private SaveCallback onSaveAllAnswers() {
+        return new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null){
+                    Log.e("saveAllAnswer", e.getMessage());
+                }
+            }
+        };
+    }
+
+    private void createAnswerListToSave(Question question, int answer) {
+
+        if (validateQuestion(question)){
+            answersToSave.add(buildAnswer(null, question, answer));
+        } else {
+            updateAnswer(question, answer);
+        }
+
+    }
+
+    private void updateAnswer(Question question, int answer) {
+        for (Answer answerItem : answersToSave){
+            if (answerItem.getQuestion().equals(question)){
+                buildAnswer(answerItem, question, answer);
+            }
+        }
+    }
+
+    private boolean validateQuestion(Question question) {
+
+        for (Answer answerItem : answersToSave){
+            if (answerItem.getQuestion().equals(question)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Answer buildAnswer(Answer answer, Question question, int answerValue) {
+
+        if (answer == null){
+            answer = new Answer();
+        }
+
+        answer.setAnswer(answerValue);
+        answer.setQuestion(question);
+        //answer.setUser();
+        answer.setPlaceCategory(selectedPlaceCategory);
+        answer.setPlace(newPlaceActivity.getNewPlace());
+
+        return answer;
     }
 
     private void setEvents() {
@@ -127,11 +182,15 @@ public class NewPlaceReviewFragment extends Fragment {
     }
 
     private void next() {
-        ((NewPlaceActivity)NewPlaceReviewFragment.this.getActivity())
-                .changeFragment(new NewPlaceFinishFragment(), NewPlaceFinishFragment.TAG);
+        Answer.saveAllInBackground(answersToSave, onSaveAllAnswers());
+        newPlaceActivity.getNewPlace().saveEventually(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null);
+            }
+        });
+        newPlaceActivity.changeFragment(new NewPlaceFinishFragment(), NewPlaceFinishFragment.TAG);
 
-        ((NewPlaceActivity)NewPlaceReviewFragment.this.getActivity())
-                .getNewPlace().saveEventually();
     }
 
 

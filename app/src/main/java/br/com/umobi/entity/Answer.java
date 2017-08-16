@@ -1,13 +1,7 @@
 package br.com.umobi.entity;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.parse.FindCallback;
 import com.parse.ParseClassName;
-import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
-import org.w3c.dom.Comment;
 
 /**
  * Created by renan on 10/07/17.
@@ -31,8 +25,8 @@ public class Answer extends ParseObject{
         return (Place)get(PLACE);
     }
 
-    public void setPlaceCategory(PlaceCategory place) {
-        put(PLACE_CATEGORY, place);
+    public void setPlaceCategory(PlaceCategory placeCategory) {
+        put(PLACE_CATEGORY, placeCategory);
     }
 
     public PlaceCategory getPlaceCategory() {
@@ -47,8 +41,8 @@ public class Answer extends ParseObject{
         return (Question)get(QUESTION);
     }
 
-    public void setUser(User user) {
-        put(USER, user);
+    public void setUser() {
+        put(USER, User.getUser());
     }
 
     public void setRating(int rating) {

@@ -2,6 +2,7 @@ package br.com.umobi.entity;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
@@ -13,6 +14,7 @@ import com.parse.ParseQuery;
 
 @ParseClassName("Place")
 public class Place extends ParseObject{
+    public static final String OBJECT_ID = "objectId";
     public static final String TITLE = "title";
     public static final String LAT_LONG = "latlong";
     public static final String ADDRESS = "address";
@@ -89,12 +91,18 @@ public class Place extends ParseObject{
     }
 
 
-    public static void getPlacesNearMe(int meters, LatLng latlong, FindCallback<Place> callback){
+    public static void getPlacesNearMe(final int meters, final LatLng latlong, final FindCallback<Place> callback){
         ParseGeoPoint geoPoint = new ParseGeoPoint(latlong.latitude, latlong.longitude);
         ParseQuery.getQuery(Place.class)
                 .whereWithinKilometers(Place.LAT_LONG, geoPoint, meters)
                 .whereEqualTo(Place.ENABLED, true)
                 .findInBackground(callback);
+    }
+
+    public static void getById(final String objectId, final GetCallback<Place> callback){
+        ParseQuery.getQuery(Place.class)
+                .whereEqualTo(OBJECT_ID, objectId)
+                .getFirstInBackground(callback);
     }
 
 

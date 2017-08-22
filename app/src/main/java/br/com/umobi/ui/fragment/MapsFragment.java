@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 import br.com.umobi.R;
+import br.com.umobi.contants.ConstantsBundle;
 import br.com.umobi.contants.ConstantsRequestCode;
 import br.com.umobi.contants.ConstantsResultCode;
 import br.com.umobi.entity.Place;
@@ -83,6 +84,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private Marker newMarker;
     private Address selectedAddress;
+    private Place selectedPlace;
 
 
     @Override
@@ -109,7 +111,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavigationUtils.navigate(MapsFragment.this.getActivity(), PlaceDetailActivity.class, false);
+
+                NavigationUtils.navigate(
+                        MapsFragment.this.getActivity(),
+                        PlaceDetailActivity.class,
+                        NavigationUtils.createBundle(ConstantsBundle.PLACE_ID, selectedPlace.getObjectId()),
+                        false);
             }
         };
     }
@@ -228,6 +235,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private void showContentPin(Marker marker) {
         contentPin.setVisibility(View.VISIBLE);
+        selectedPlace = (Place) marker.getTag();
         fillContentPin(marker);
     }
 
@@ -315,9 +323,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
 
-        String address = addresses.get(0).getAddressLine(0);
-        selectedAddress = addresses.get(0);
-        addAddress.setText(address);
+        if (!addresses.isEmpty()){
+            String address = addresses.get(0).getAddressLine(0);
+            selectedAddress = addresses.get(0);
+            addAddress.setText(address);
+        } else {
+            Toast.makeText(MapsFragment.this.getActivity(), "Endereço não encontrado!", Toast.LENGTH_SHORT).show();
+        }
 
     }
 

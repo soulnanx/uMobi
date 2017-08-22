@@ -2,6 +2,7 @@ package br.com.umobi.entity;
 
 import com.parse.FindCallback;
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -17,6 +18,7 @@ public class Question extends ParseObject{
     public static final String IS_RATING = "isRating";
     public static final String PLACE_CATEGORIES = "placeCategories";
     public static final String AVAILABLE = "available";
+    public static final String ICON = "icon";
 
 
     public void setTitle(String title) {
@@ -25,6 +27,10 @@ public class Question extends ParseObject{
 
     public String getTitle() {
         return getString(TITLE);
+    }
+
+    public ParseFile getIcon() {
+        return getParseFile(ICON);
     }
 
     public boolean isRating() {

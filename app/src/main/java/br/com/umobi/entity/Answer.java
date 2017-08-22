@@ -1,7 +1,9 @@
 package br.com.umobi.entity;
 
+import com.parse.FindCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 /**
  * Created by renan on 10/07/17.
@@ -69,4 +71,14 @@ public class Answer extends ParseObject{
         return getInt(ANSWER);
     }
 
+    public static void getByIdPlace(final Place place, FindCallback<Answer> callback) {
+        ParseQuery.getQuery(Answer.class)
+                .include(PLACE)
+                .include(QUESTION)
+                .include(PLACE_CATEGORY)
+                .include(USER)
+                .whereEqualTo(PLACE, place)
+                .findInBackground(callback);
+
+    }
 }

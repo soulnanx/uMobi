@@ -102,7 +102,6 @@ public class NewPlaceReviewFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(new QuestionAdapter(NewPlaceReviewFragment.this.getActivity(), questions, onClickAnswer()));
-        questions.toString();
     }
 
     private QuestionAdapter.CallbackClick onClickAnswer() {
@@ -182,15 +181,9 @@ public class NewPlaceReviewFragment extends Fragment {
     }
 
     private void next() {
-        Answer.saveAllInBackground(answersToSave, onSaveAllAnswers());
-        newPlaceActivity.getNewPlace().saveEventually(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null);
-            }
-        });
+        newPlaceActivity.getNewPlace().saveInBackground();
         newPlaceActivity.changeFragment(new NewPlaceFinishFragment(), NewPlaceFinishFragment.TAG);
-
+        Answer.saveAllInBackground(answersToSave);
     }
 
 

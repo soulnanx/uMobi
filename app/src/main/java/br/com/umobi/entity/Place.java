@@ -102,6 +102,8 @@ public class Place extends ParseObject{
     public static void getById(final String objectId, final GetCallback<Place> callback){
         ParseQuery.getQuery(Place.class)
                 .whereEqualTo(OBJECT_ID, objectId)
+                .include(PLACE_CATEGORY)
+                .include(PLACE_CATEGORY + "." + PlaceCategory.QUESTIONS )
                 .getFirstInBackground(callback);
     }
 

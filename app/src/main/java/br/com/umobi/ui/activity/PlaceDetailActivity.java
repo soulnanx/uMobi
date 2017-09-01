@@ -2,7 +2,6 @@ package br.com.umobi.ui.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -19,11 +20,9 @@ import java.util.List;
 
 import br.com.umobi.R;
 import br.com.umobi.adapter.AnswerPlaceDetailAdapter;
-import br.com.umobi.adapter.QuestionAdapter;
 import br.com.umobi.contants.ConstantsBundle;
 import br.com.umobi.entity.Answer;
 import br.com.umobi.entity.Place;
-import br.com.umobi.ui.fragment.NewPlaceReviewFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -42,6 +41,18 @@ public class PlaceDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.answer_list)
     RecyclerView answerListRecyclerView;
+
+    @BindView(R.id.include_drawer_place_detail_access_percent)
+    TextView accessPercent;
+
+    @BindView(R.id.activity_place_detail_description)
+    TextView description;
+
+    @BindView(R.id.activity_place_detail_address)
+    TextView address;
+
+    @BindView(R.id.include_drawer_place_detail_premium_badge)
+    ImageView badgeImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +96,17 @@ public class PlaceDetailActivity extends AppCompatActivity {
             public void done(Place selectedPlaceFromParse, ParseException e) {
                 if (e == null){
                     place = selectedPlaceFromParse;
-                    setToolbar(place.getTitle());
+                    setValues(place);
                     Answer.getByIdPlace(place, onGetAnswerByPlaceCallback());
                 }
             }
         };
+    }
+
+    private void setValues(Place place) {
+        setToolbar(place.getTitle());
+        description.setText(place.getDescription());
+        address.setText(place.getAddress());
     }
 
     private FindCallback<Answer> onGetAnswerByPlaceCallback() {

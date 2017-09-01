@@ -79,7 +79,7 @@ public class NewPlaceReviewFragment extends Fragment {
     }
 
     private void loadQuestions() {
-        Question.getByPlaceCategory(selectedPlaceCategory, onGetByPlaceCategory());
+        setList(selectedPlaceCategory.getQuestions());
     }
 
     private FindCallback<Question> onGetByPlaceCategory() {

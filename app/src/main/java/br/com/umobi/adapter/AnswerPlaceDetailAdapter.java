@@ -41,7 +41,7 @@ public class AnswerPlaceDetailAdapter extends RecyclerView.Adapter<AnswerPlaceDe
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Answer answer = answerList.get(position);
 
-        holder.title.setText(answer.getQuestion().getTitle());
+        holder.title.setText(answer.getQuestion().getLabel());
 
 
         if (answer.getQuestion().getIcon() != null) {

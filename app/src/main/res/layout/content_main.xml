@@ -11,8 +11,28 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main">
 
-    <FrameLayout
-        android:id="@+id/content_main_frame"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextFormLabel"
+            android:text="@string/place_detail_description"/>
+
+        <TextView
+            android:id="@+id/activity_place_detail_description"
+            style="@style/TextFormValue"/>
+
+
+        <TextView
+            style="@style/TextFormLabel"
+            android:text="@string/place_detail_address"/>
+
+        <TextView
+            android:id="@+id/activity_place_detail_address"
+            style="@style/TextFormValue"/>
+
+
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

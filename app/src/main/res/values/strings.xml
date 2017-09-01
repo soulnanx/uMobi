@@ -112,4 +112,6 @@
     <string name="answer_no">Não</string>
     <string name="answer_do_not_know">Não sei...</string>
     <string name="answer_radio_i_do_not_know">Não sei...</string>
+    <string name="place_detail_description">descrição:</string>
+    <string name="place_detail_address">endereço:</string>
 </resources>

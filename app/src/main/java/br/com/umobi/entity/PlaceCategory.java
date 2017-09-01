@@ -8,6 +8,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.List;
+
 /**
  * Created by renan on 10/07/17.
  */
@@ -17,6 +19,7 @@ public class PlaceCategory extends ParseObject {
     public static final String TITLE = "title";
     public static final String ICON = "icon";
     public static final String AVAILABLE = "available";
+    public static final String QUESTIONS = "questions";
 
     public void setTitle(String title) {
         put(TITLE, title);
@@ -36,7 +39,13 @@ public class PlaceCategory extends ParseObject {
 
     public static void getOnlyPlaceTest(final FindCallback<PlaceCategory> serviceFindCallback) {
         ParseQuery.getQuery(PlaceCategory.class)
+                .include(QUESTIONS)
+
                 .whereEqualTo(AVAILABLE, true).findInBackground(serviceFindCallback);
+    }
+
+    public List<Question> getQuestions(){
+        return getList(QUESTIONS);
     }
 
 

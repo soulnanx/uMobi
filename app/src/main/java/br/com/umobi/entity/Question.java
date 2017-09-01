@@ -16,10 +16,10 @@ import java.util.List;
 public class Question extends ParseObject{
     public static final String TITLE = "title";
     public static final String IS_RATING = "isRating";
-    public static final String PLACE_CATEGORIES = "placeCategories";
+//    public static final String PLACE_CATEGORIES = "placeCategories";
     public static final String AVAILABLE = "available";
     public static final String ICON = "icon";
-
+    public static final String LABEL = "label";
 
     public void setTitle(String title) {
         put(TITLE, title);
@@ -33,18 +33,26 @@ public class Question extends ParseObject{
         return getParseFile(ICON);
     }
 
+    public String getLabel() {
+        return getString(LABEL);
+    }
+
     public boolean isRating() {
         return getBoolean(IS_RATING);
     }
 
-    public List<PlaceCategory> getPlaceCategories() {
-        return getList(PLACE_CATEGORIES);
+    public boolean isAvailable() {
+        return getBoolean(AVAILABLE);
     }
 
-    public static void getByPlaceCategory(final PlaceCategory placeCategory, final FindCallback<Question> serviceFindCallback) {
-        ParseQuery.getQuery(Question.class)
-                .include(PLACE_CATEGORIES)
-                .whereEqualTo(AVAILABLE, true)
-                .whereEqualTo(PLACE_CATEGORIES, placeCategory.getObjectId()).findInBackground(serviceFindCallback);
-    }
+//    public List<PlaceCategory> getPlaceCategories() {
+//        return getList(PLACE_CATEGORIES);
+//    }
+
+//    public static void getByPlaceCategory(final PlaceCategory placeCategory, final FindCallback<Question> serviceFindCallback) {
+//        ParseQuery.getQuery(Question.class)
+//                .include(PLACE_CATEGORIES)
+//                .whereEqualTo(AVAILABLE, true)
+//                .whereEqualTo(PLACE_CATEGORIES, placeCategory.getObjectId()).findInBackground(serviceFindCallback);
+//    }
 }

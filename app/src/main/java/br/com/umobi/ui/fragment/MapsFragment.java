@@ -323,7 +323,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
 
-        if (!addresses.isEmpty()){
+        if (address != null && !addresses.isEmpty()){
             String address = addresses.get(0).getAddressLine(0);
             selectedAddress = addresses.get(0);
             addAddress.setText(address);

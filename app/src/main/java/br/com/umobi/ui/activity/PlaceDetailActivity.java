@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -50,6 +51,9 @@ public class PlaceDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.activity_place_detail_address)
     TextView address;
+
+    @BindView(R.id.app_bar_main_image)
+    ImageView image;
 
     @BindView(R.id.include_drawer_place_detail_premium_badge)
     ImageView badgeImg;
@@ -107,6 +111,19 @@ public class PlaceDetailActivity extends AppCompatActivity {
         setToolbar(place.getTitle());
         description.setText(place.getDescription());
         address.setText(place.getAddress());
+        loadImage(place.getImage());
+
+    }
+
+    private void loadImage(String url) {
+        if (url != null && !url.isEmpty()) {
+            Picasso.with(this)
+                    .load(url)
+                    .noFade()
+                    .into(image);
+        } else {
+            image.setImageResource(R.drawable.ic_broken_image);
+        }
     }
 
     private FindCallback<Answer> onGetAnswerByPlaceCallback() {

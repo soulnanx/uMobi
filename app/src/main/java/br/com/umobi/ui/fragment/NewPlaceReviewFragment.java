@@ -12,9 +12,9 @@ import android.widget.Button;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.SaveCallback;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,27 +55,14 @@ public class NewPlaceReviewFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         answersToSave = new ArrayList<>();
-        newPlaceActivity = ((NewPlaceActivity)NewPlaceReviewFragment.this.getActivity());
+        newPlaceActivity = ((NewPlaceActivity) NewPlaceReviewFragment.this.getActivity());
+        selectedPlaceCategory = newPlaceActivity.selectedPlaceCategory;
         setEvents();
         loadValues();
     }
 
     private void loadValues() {
-        PlaceCategory.getOnlyPlaceTest(onGetOnlyPlaceTestCallback());
-    }
-
-    private FindCallback<PlaceCategory> onGetOnlyPlaceTestCallback() {
-        return new FindCallback<PlaceCategory>() {
-            @Override
-            public void done(List<PlaceCategory> categories, ParseException e) {
-                if (e == null){
-                    if (!categories.isEmpty()){
-                        selectedPlaceCategory = categories.get(0);
-                        loadQuestions();
-                    }
-                }
-            }
-        };
+        loadQuestions();
     }
 
     private void loadQuestions() {
@@ -86,7 +73,7 @@ public class NewPlaceReviewFragment extends Fragment {
         return new FindCallback<Question>() {
             @Override
             public void done(List<Question> questions, ParseException e) {
-                if (e == null){
+                if (e == null) {
                     fillQuestions(questions);
                 }
             }
@@ -117,7 +104,7 @@ public class NewPlaceReviewFragment extends Fragment {
         return new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if (e != null){
+                if (e != null) {
                     Log.e("saveAllAnswer", e.getMessage());
                 }
             }
@@ -126,7 +113,7 @@ public class NewPlaceReviewFragment extends Fragment {
 
     private void createAnswerListToSave(Question question, int answer) {
 
-        if (validateQuestion(question)){
+        if (validateQuestion(question)) {
             answersToSave.add(buildAnswer(null, question, answer));
         } else {
             updateAnswer(question, answer);
@@ -135,8 +122,8 @@ public class NewPlaceReviewFragment extends Fragment {
     }
 
     private void updateAnswer(Question question, int answer) {
-        for (Answer answerItem : answersToSave){
-            if (answerItem.getQuestion().equals(question)){
+        for (Answer answerItem : answersToSave) {
+            if (answerItem.getQuestion().equals(question)) {
                 buildAnswer(answerItem, question, answer);
             }
         }
@@ -144,8 +131,8 @@ public class NewPlaceReviewFragment extends Fragment {
 
     private boolean validateQuestion(Question question) {
 
-        for (Answer answerItem : answersToSave){
-            if (answerItem.getQuestion().equals(question)){
+        for (Answer answerItem : answersToSave) {
+            if (answerItem.getQuestion().equals(question)) {
                 return false;
             }
         }
@@ -154,7 +141,7 @@ public class NewPlaceReviewFragment extends Fragment {
 
     private Answer buildAnswer(Answer answer, Question question, int answerValue) {
 
-        if (answer == null){
+        if (answer == null) {
             answer = new Answer();
         }
 
@@ -181,7 +168,7 @@ public class NewPlaceReviewFragment extends Fragment {
     }
 
     private void next() {
-        newPlaceActivity.getNewPlace().saveInBackground();
+        newPlaceActivity.saveNewPlace();
         newPlaceActivity.changeFragment(new NewPlaceFinishFragment(), NewPlaceFinishFragment.TAG);
         Answer.saveAllInBackground(answersToSave);
     }

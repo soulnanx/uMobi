@@ -1,14 +1,25 @@
 package br.com.umobi.ui.activity;
 
+import android.content.Intent;
 import android.location.Address;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.SaveCallback;
+
+import java.util.List;
+
 import br.com.umobi.R;
 import br.com.umobi.contants.ConstantsResultCode;
 import br.com.umobi.entity.Place;
+import br.com.umobi.entity.PlaceCategory;
 import br.com.umobi.entity.Question;
+import br.com.umobi.ui.dialog.DialogLoading;
 import br.com.umobi.ui.fragment.NewPlaceBasicDataFragment;
 import butterknife.ButterKnife;
 
@@ -17,6 +28,10 @@ public class NewPlaceActivity extends BaseAppCompatActivity {
     private Place newPlace;
     private Question newQuestion;
     private Address selectedAddress;
+    public List<PlaceCategory> availableCategories;
+    private DialogLoading dialogLoading;
+    public PlaceCategory selectedPlaceCategory;
+    public byte[] selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +47,14 @@ public class NewPlaceActivity extends BaseAppCompatActivity {
         newPlace = new Place();
         newQuestion = new Question();
         selectedAddress = getIntent().getExtras().getParcelable("selectedAddress");
-        changeFragment(new NewPlaceBasicDataFragment(), NewPlaceBasicDataFragment.TAG);
+
+        loadValues();
+    }
+
+    private void loadValues() {
+        dialogLoading = DialogLoading.show(this,R.string.waiting_message);
+        PlaceCategory.getAllAvailable(onGetPlaceCategoryCallback());
+
     }
 
     public void changeFragment(Fragment frag, String tag) {
@@ -42,6 +64,22 @@ public class NewPlaceActivity extends BaseAppCompatActivity {
         transaction.replace(R.id.activity_new_place_fragments, frag, tag);
 
         transaction.commit();
+    }
+
+    private FindCallback<PlaceCategory> onGetPlaceCategoryCallback() {
+        return new FindCallback<PlaceCategory>() {
+            @Override
+            public void done(List<PlaceCategory> categoriesFromParse, ParseException e) {
+                dialogLoading.dismiss();
+                if (e == null){
+                    if (!categoriesFromParse.isEmpty()){
+                        availableCategories = categoriesFromParse;
+                    }
+                    changeFragment(new NewPlaceBasicDataFragment(), NewPlaceBasicDataFragment.TAG);
+                }
+
+            }
+        };
     }
 
     public Place getNewPlace(){
@@ -57,4 +95,22 @@ public class NewPlaceActivity extends BaseAppCompatActivity {
         setResult(ConstantsResultCode.NEW_PLACE_CANCELLED);
         super.onBackPressed();
     }
+
+    public void saveNewPlace() {
+        if (selectedImage != null) {
+            final ParseFile file = new ParseFile(newPlace.getObjectId(), selectedImage);
+            file.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        newPlace.setImage(file.getUrl());
+                        newPlace.saveInBackground();
+                    }
+                }
+            });
+        } else {
+            newPlace.saveInBackground();
+        }
+    }
+
 }

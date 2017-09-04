@@ -37,7 +37,7 @@ public class PlaceCategory extends ParseObject {
         return (ParseFile) get(ICON);
     }
 
-    public static void getOnlyPlaceTest(final FindCallback<PlaceCategory> serviceFindCallback) {
+    public static void getAllAvailable(final FindCallback<PlaceCategory> serviceFindCallback) {
         ParseQuery.getQuery(PlaceCategory.class)
                 .include(QUESTIONS)
 

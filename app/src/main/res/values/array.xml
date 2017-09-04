@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="add_photo">
+        <item >Camera</item>
+        <item >Galeria</item>
+    </string-array>
+
+
+    <string-array name="gender">
+        <item >Masculino</item>
+        <item >Feminino</item>
+        <item >Outros</item>
+    </string-array>
+
+</resources>

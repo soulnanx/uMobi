@@ -8,14 +8,11 @@ import android.location.Address;
 
 public class AddressUtils {
 
-    public static String getFullAddress(Address address){
+    public static String getFullAddress(Address address) {
         return new StringBuilder()
-                .append(address.getThoroughfare())
-                .append(", ")
-                .append(address.getFeatureName())
-                .append(", ")
-                .append(address.getSubLocality())
-                .append(", ")
-                .append(address.getLocality()).toString();
+                .append(address.getThoroughfare() != null ? address.getThoroughfare()       : "")
+                .append(address.getFeatureName()  != null ? ", " + address.getFeatureName() : "")
+                .append(address.getSubLocality()  != null ? ", " + address.getSubLocality() : "")
+                .append(address.getLocality()     != null ? ", " + address.getLocality()    : "").toString();
     }
 }

@@ -4,6 +4,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -22,6 +23,8 @@ public class Place extends ParseObject{
     public static final String DESCRIPTION = "description";
     public static final String ENABLED = "enabled";
     public static final String PLACE_CATEGORY = "placeCategory";
+    public static final String CITY = "city";
+    public static final String IMAGE = "image";
 
     public void setTitle(String title) {
         put(TITLE, title);
@@ -86,8 +89,24 @@ public class Place extends ParseObject{
         put(PLACE_CATEGORY, placeCategory);
     }
 
+    public String getCity() {
+        return getString(CITY);
+    }
+
+    public void setCity(final String city) {
+        put(CITY, city);
+    }
+
     public PlaceCategory getPlaceCategory() {
         return (PlaceCategory) get(PLACE_CATEGORY);
+    }
+
+    public String getImage() {
+        return getString(IMAGE);
+    }
+
+    public void setImage(String url) {
+        put(IMAGE, url);
     }
 
 

@@ -114,4 +114,7 @@
     <string name="answer_radio_i_do_not_know">Não sei...</string>
     <string name="place_detail_description">descrição:</string>
     <string name="place_detail_address">endereço:</string>
+    <string name="fragment_new_place_basic_data_title">O que você sabe sobre esse local?</string>
+    <string name="waiting_message">aguarde</string>
+    <string name="dialog_title_select_category">O que esse local é?</string>
 </resources>

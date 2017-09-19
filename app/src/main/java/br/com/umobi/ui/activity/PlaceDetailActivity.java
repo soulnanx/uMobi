@@ -23,13 +23,13 @@ import br.com.umobi.R;
 import br.com.umobi.adapter.AnswerPlaceDetailAdapter;
 import br.com.umobi.contants.ConstantsBundle;
 import br.com.umobi.entity.Answer;
-import br.com.umobi.entity.Place;
+import br.com.umobi.entity.UMobiPlace;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PlaceDetailActivity extends AppCompatActivity {
 
-    private Place place;
+    private UMobiPlace place;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -90,14 +90,14 @@ public class PlaceDetailActivity extends AppCompatActivity {
         String idPlace = getIntent().getExtras().getString(ConstantsBundle.PLACE_ID, "");
 
         if (!idPlace.isEmpty()){
-            Place.getById(idPlace, onGetPlaceById());
+            UMobiPlace.getById(idPlace, onGetPlaceById());
         }
     }
 
-    private GetCallback<Place> onGetPlaceById() {
-        return new GetCallback<Place>() {
+    private GetCallback<UMobiPlace> onGetPlaceById() {
+        return new GetCallback<UMobiPlace>() {
             @Override
-            public void done(Place selectedPlaceFromParse, ParseException e) {
+            public void done(UMobiPlace selectedPlaceFromParse, ParseException e) {
                 if (e == null){
                     place = selectedPlaceFromParse;
                     setValues(place);
@@ -107,7 +107,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
         };
     }
 
-    private void setValues(Place place) {
+    private void setValues(UMobiPlace place) {
         setToolbar(place.getTitle());
         description.setText(place.getDescription());
         address.setText(place.getAddress());

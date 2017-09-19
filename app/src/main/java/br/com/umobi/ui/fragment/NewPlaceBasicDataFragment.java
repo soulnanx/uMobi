@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.umobi.R;
-import br.com.umobi.entity.Place;
+import br.com.umobi.entity.GooglePlace;
+import br.com.umobi.entity.UMobiPlace;
 import br.com.umobi.entity.PlaceCategory;
 import br.com.umobi.ui.activity.NewPlaceActivity;
 import br.com.umobi.utils.AddressUtils;
@@ -47,6 +48,7 @@ public class NewPlaceBasicDataFragment extends Fragment {
 
     private View view;
     private Address selectedAddress;
+    private GooglePlace selectedPlace;
     private List<PlaceCategory> availableCategories;
     private PlaceCategory selectedPlaceCategory;
 
@@ -67,10 +69,15 @@ public class NewPlaceBasicDataFragment extends Fragment {
     private void loadValues() {
         selectedAddress = ((NewPlaceActivity) NewPlaceBasicDataFragment.this.getActivity())
                 .getSelectedAddress();
+        selectedPlace = ((NewPlaceActivity) NewPlaceBasicDataFragment.this.getActivity()).
+                getSelectedPlace();
         availableCategories = ((NewPlaceActivity) NewPlaceBasicDataFragment.this.getActivity())
                 .availableCategories;
 
         addressTxt.setText(AddressUtils.getFullAddress(selectedAddress));
+        if(selectedPlace != null){
+            titleTxt.setText(selectedPlace.getName());
+        }
     }
 
     private void setEvents() {
@@ -147,7 +154,7 @@ public class NewPlaceBasicDataFragment extends Fragment {
                 .selectedPlaceCategory = selectedPlaceCategory;
     }
 
-    private void fillNewPlaceBasicData(Place newPlace) {
+    private void fillNewPlaceBasicData(UMobiPlace newPlace) {
         newPlace.setEnabled(true);
         newPlace.setDescription(descriptionTxt.getText().toString());
         newPlace.setTitle(titleTxt.getText().toString());

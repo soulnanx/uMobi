@@ -7,7 +7,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -26,7 +27,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
@@ -90,8 +90,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @BindView(R.id.fragment_maps_content_pin_more)
     Button placeMore;
 
-    @BindView(R.id.fab_add)
+    @BindView(R.id.fab_add_place)
     FloatingActionButton fabAddPlace;
+
+    @BindView(R.id.fab_add_problem)
+    FloatingActionButton fabAddProblem;
+
+    @BindView(R.id.fab_menu)
+    FloatingActionMenu fabMenu;
 
     private Marker newMarker;
     private Address selectedAddress;
@@ -102,7 +108,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_maps, container, false);
         init();
-
         return view;
     }
 
@@ -117,6 +122,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         addPlace.setOnClickListener(onClickAddPlace());
         addProblem.setOnClickListener(onClickAddProblem());
         fabAddPlace.setOnClickListener(onAddPlaceClickListener());
+        fabAddProblem.setOnClickListener(onAddProblemClickListener());
     }
 
     private View.OnClickListener onClickPlaceMore() {
@@ -195,7 +201,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnMarkerClickListener(onMarkerClick());
         mMap.setOnMapClickListener(onMapClick());
         mMap.setMaxZoomPreference(20);
-        mMap.setMinZoomPreference(18);
+        mMap.setMinZoomPreference(14);
 
         if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -249,7 +255,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         };
     }
 
+    private View.OnClickListener onAddProblemClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        };
+    }
+
     private void hideContents() {
+        fabMenu.close(true);
         contentPin.setVisibility(View.GONE);
         contentAdd.setVisibility(View.GONE);
         fabAddPlace.setVisibility(View.VISIBLE);

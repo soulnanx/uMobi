@@ -68,4 +68,22 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="MenuLabelsStyle">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="MenuButtonsStyle">
+        <item name="fab_size">mini</item>
+        <item name="fab_showAnimation">@anim/jump_from_down</item>
+        <item name="fab_hideAnimation">@anim/jump_to_down</item>
+        <item name="fab_shadowColor">#a4a4a4</item>
+        <item name="fab_colorNormal">?colorPrimary</item>
+        <item name="fab_colorPressed">?colorPrimaryDark</item>
+        <item name="fab_colorRipple">#0ca3b3</item>
+    </style>
+
 </resources>

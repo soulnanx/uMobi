@@ -19,12 +19,12 @@ public class Answer extends ParseObject{
     public static final String COMMENT = "comment";
     public static final String ANSWER = "answer";
 
-    public void setPlace(Place place) {
+    public void setPlace(UMobiPlace place) {
         put(PLACE, place);
     }
 
-    public Place getPlace() {
-        return (Place)get(PLACE);
+    public UMobiPlace getPlace() {
+        return (UMobiPlace)get(PLACE);
     }
 
     public void setPlaceCategory(PlaceCategory placeCategory) {
@@ -71,7 +71,7 @@ public class Answer extends ParseObject{
         return getInt(ANSWER);
     }
 
-    public static void getByIdPlace(final Place place, FindCallback<Answer> callback) {
+    public static void getByIdPlace(final UMobiPlace place, FindCallback<Answer> callback) {
         ParseQuery.getQuery(Answer.class)
                 .include(PLACE)
                 .include(QUESTION)

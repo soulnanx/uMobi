@@ -16,12 +16,12 @@ public class Rating extends ParseUser {
     public static final String COMMENT = "comment";
 
 
-    public void setPlace(Place place) {
+    public void setPlace(UMobiPlace place) {
         put(PLACE, place);
     }
 
-    public Place getPlace() {
-        return (Place)get(PLACE);
+    public UMobiPlace getPlace() {
+        return (UMobiPlace)get(PLACE);
     }
 
     public void setUser(User user) {

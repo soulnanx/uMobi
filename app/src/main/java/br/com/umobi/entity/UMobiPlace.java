@@ -4,7 +4,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
-import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -13,8 +12,8 @@ import com.parse.ParseQuery;
  * Created by renan on 10/07/17.
  */
 
-@ParseClassName("Place")
-public class Place extends ParseObject{
+@ParseClassName("UMobiPlace")
+public class UMobiPlace extends ParseObject{
     public static final String OBJECT_ID = "objectId";
     public static final String TITLE = "title";
     public static final String LAT_LONG = "latlong";
@@ -110,16 +109,16 @@ public class Place extends ParseObject{
     }
 
 
-    public static void getPlacesNearMe(final int meters, final LatLng latlong, final FindCallback<Place> callback){
+    public static void getPlacesNearMe(final int meters, final LatLng latlong, final FindCallback<UMobiPlace> callback){
         ParseGeoPoint geoPoint = new ParseGeoPoint(latlong.latitude, latlong.longitude);
-        ParseQuery.getQuery(Place.class)
-                .whereWithinKilometers(Place.LAT_LONG, geoPoint, meters)
-                .whereEqualTo(Place.ENABLED, true)
+        ParseQuery.getQuery(UMobiPlace.class)
+                .whereWithinKilometers(UMobiPlace.LAT_LONG, geoPoint, meters)
+                .whereEqualTo(UMobiPlace.ENABLED, true)
                 .findInBackground(callback);
     }
 
-    public static void getById(final String objectId, final GetCallback<Place> callback){
-        ParseQuery.getQuery(Place.class)
+    public static void getById(final String objectId, final GetCallback<UMobiPlace> callback){
+        ParseQuery.getQuery(UMobiPlace.class)
                 .whereEqualTo(OBJECT_ID, objectId)
                 .include(PLACE_CATEGORY)
                 .include(PLACE_CATEGORY + "." + PlaceCategory.QUESTIONS )

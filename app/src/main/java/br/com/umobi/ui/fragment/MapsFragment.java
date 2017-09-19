@@ -7,7 +7,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,16 +16,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
@@ -40,8 +35,7 @@ import br.com.umobi.R;
 import br.com.umobi.contants.ConstantsBundle;
 import br.com.umobi.contants.ConstantsRequestCode;
 import br.com.umobi.contants.ConstantsResultCode;
-import br.com.umobi.entity.GooglePlace;
-import br.com.umobi.entity.UMobiPlace;
+import br.com.umobi.entity.Place;
 import br.com.umobi.entity.User;
 import br.com.umobi.ui.activity.MainActivity;
 import br.com.umobi.ui.activity.NewPlaceActivity;
@@ -56,8 +50,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = "MapFragment";
     public static final int ONE_KILOMETER = 1000;
     public static final int FIFTY_KILOMETER = 50000;
-
-    private static final int PLACE_PICKER_REQUEST = 1;
 
     private GoogleMap mMap;
     private View view;
@@ -90,12 +82,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @BindView(R.id.fragment_maps_content_pin_more)
     Button placeMore;
 
-    @BindView(R.id.fab_add)
-    FloatingActionButton fabAddPlace;
-
     private Marker newMarker;
     private Address selectedAddress;
-    private UMobiPlace selectedPlace;
+    private Place selectedPlace;
 
 
     @Override
@@ -116,7 +105,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         placeMore.setOnClickListener(onClickPlaceMore());
         addPlace.setOnClickListener(onClickAddPlace());
         addProblem.setOnClickListener(onClickAddProblem());
-        fabAddPlace.setOnClickListener(onAddPlaceClickListener());
     }
 
     private View.OnClickListener onClickPlaceMore() {
@@ -161,10 +149,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         moveCameraToUserPosition();
     }
 
-    private FindCallback<UMobiPlace> onGetPlacesNearMe() {
-        return new FindCallback<UMobiPlace>() {
+    private FindCallback<Place> onGetPlacesNearMe() {
+        return new FindCallback<Place>() {
             @Override
-            public void done(List<UMobiPlace> places, ParseException e) {
+            public void done(List<Place> places, ParseException e) {
                 if (e == null) {
                     mMap.clear();
                     addPinsToMap(places, false);
@@ -175,15 +163,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         };
     }
 
-    private void addPinsToMap(List<UMobiPlace> places, boolean isNew) {
-        for (UMobiPlace place : places) {
+    private void addPinsToMap(List<Place> places, boolean isNew) {
+        for (Place place : places) {
             if (place.getLatLong() != null) {
                 createPin(place);
             }
         }
     }
 
-    private void createPin(UMobiPlace place){
+    private void createPin(Place place){
         mMap.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_ok_50))
                 .position(place.getLatLong())).setTag(place);
@@ -233,26 +221,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         };
     }
 
-    private View.OnClickListener onAddPlaceClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-    }
-
     private void hideContents() {
         contentPin.setVisibility(View.GONE);
         contentAdd.setVisibility(View.GONE);
-        fabAddPlace.setVisibility(View.VISIBLE);
     }
 
     private void clearNewMarker() {
@@ -264,13 +235,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private void showContentPin(Marker marker) {
         contentPin.setVisibility(View.VISIBLE);
-        fabAddPlace.setVisibility(View.GONE);
-        selectedPlace = (UMobiPlace) marker.getTag();
+        selectedPlace = (Place) marker.getTag();
         fillContentPin(marker);
     }
 
     private void fillContentPin(Marker marker) {
-        UMobiPlace place = (UMobiPlace) marker.getTag();
+        Place place = (Place) marker.getTag();
         title.setText(place.getTitle());
         description.setText(place.getDescription());
         address.setText(place.getAddress());
@@ -284,7 +254,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 if (cameraPositionLastSearch != null) {
                     double dist = LatLongUtils.calcDistance(cameraPositionLastSearch, mMap.getCameraPosition().target);
                     if (dist > ONE_KILOMETER && dist < FIFTY_KILOMETER) {
-                        UMobiPlace.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
+                        Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
                         cameraPositionLastSearch = mMap.getCameraPosition().target;
                     }
                 }
@@ -296,7 +266,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         if (mMap != null && ((MainActivity) this.getActivity()).getLastLocation() != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(((MainActivity) this.getActivity()).getLastLocation()));
-            UMobiPlace.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
+            Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
         } else {
             moveCameraToUserLastLocation();
             ((MainActivity) this.getActivity()).findLastLocation(new MainActivity.OnLocationFound() {
@@ -307,7 +277,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                     ));
 
-                    UMobiPlace.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
+                    Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
                     cameraPositionLastSearch = mMap.getCameraPosition().target;
                     User.saveLastLocation(
                             MapsFragment.this.getActivity(),
@@ -345,11 +315,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private void showContentAdd(LatLng latLng) {
         contentAdd.setVisibility(View.VISIBLE);
-        fabAddPlace.setVisibility(View.GONE);
-        findAddress(latLng);
-    }
-
-    private void findAddress(LatLng latLng){
         Geocoder geocoder = new Geocoder(this.getContext(), Locale.getDefault());
         List<Address> addresses = null;
         try {
@@ -357,6 +322,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         if (address != null && !addresses.isEmpty()){
             String address = addresses.get(0).getAddressLine(0);
             selectedAddress = addresses.get(0);
@@ -364,6 +330,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         } else {
             Toast.makeText(MapsFragment.this.getActivity(), "Endereço não encontrado!", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -375,22 +342,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             switch (resultCode){
                 case ConstantsResultCode.NEW_PLACE_FINISHED:
                     hideContents();
-                    UMobiPlace.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
+                    Place.getPlacesNearMe(1, mMap.getCameraPosition().target, onGetPlacesNearMe());
                     break;
                 case ConstantsResultCode.NEW_PLACE_CANCELLED:
 
                     break;
             }
 
-        }else if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == getActivity().RESULT_OK) {
-                final GooglePlace place = GooglePlace.placeToGooglePlace(PlacePicker.getPlace(getActivity(), data));
-                Intent intent = new Intent(MapsFragment.this.getActivity(), NewPlaceActivity.class);
-                findAddress(new LatLng(place.getLatitude(), place.getLongitude()));
-                intent.putExtra("selectedAddress", selectedAddress);
-                intent.putExtra("selectedPlace", place);
-                startActivityForResult(intent, ConstantsRequestCode.NEW_PLACE);
-            }
         }
     }
 }

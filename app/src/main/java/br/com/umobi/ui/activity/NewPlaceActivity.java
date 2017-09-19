@@ -1,6 +1,8 @@
 package br.com.umobi.ui.activity;
 
+import android.content.Intent;
 import android.location.Address;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,8 +16,7 @@ import java.util.List;
 
 import br.com.umobi.R;
 import br.com.umobi.contants.ConstantsResultCode;
-import br.com.umobi.entity.GooglePlace;
-import br.com.umobi.entity.UMobiPlace;
+import br.com.umobi.entity.Place;
 import br.com.umobi.entity.PlaceCategory;
 import br.com.umobi.entity.Question;
 import br.com.umobi.ui.dialog.DialogLoading;
@@ -24,10 +25,9 @@ import butterknife.ButterKnife;
 
 public class NewPlaceActivity extends BaseAppCompatActivity {
 
-    private UMobiPlace newPlace;
+    private Place newPlace;
     private Question newQuestion;
     private Address selectedAddress;
-    private GooglePlace selectedPlace;
     public List<PlaceCategory> availableCategories;
     private DialogLoading dialogLoading;
     public PlaceCategory selectedPlaceCategory;
@@ -44,10 +44,9 @@ public class NewPlaceActivity extends BaseAppCompatActivity {
     private void init() {
         ButterKnife.bind(this);
 
-        newPlace = new UMobiPlace();
+        newPlace = new Place();
         newQuestion = new Question();
         selectedAddress = getIntent().getExtras().getParcelable("selectedAddress");
-        selectedPlace = (GooglePlace) getIntent().getExtras().getSerializable("selectedPlace");
 
         loadValues();
     }
@@ -55,6 +54,7 @@ public class NewPlaceActivity extends BaseAppCompatActivity {
     private void loadValues() {
         dialogLoading = DialogLoading.show(this,R.string.waiting_message);
         PlaceCategory.getAllAvailable(onGetPlaceCategoryCallback());
+
     }
 
     public void changeFragment(Fragment frag, String tag) {
@@ -82,16 +82,12 @@ public class NewPlaceActivity extends BaseAppCompatActivity {
         };
     }
 
-    public UMobiPlace getNewPlace(){
+    public Place getNewPlace(){
         return newPlace;
     }
 
     public Address getSelectedAddress() {
         return selectedAddress;
-    }
-
-    public GooglePlace getSelectedPlace(){
-        return selectedPlace;
     }
 
     @Override
